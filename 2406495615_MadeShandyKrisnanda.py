@@ -1,15 +1,21 @@
 import turtle as t
 import random as r
 t.pensize(10)
+t.title("Olympic Logo and Colorful Chessboard")
 t.speed(0)
 t.colormode(255)
-pen_color = [0,129,200, 252,177,49, 0,0,0, 0,166,81, 238,51,78]
+biru = 0,129,200
+kuning = 252,177,49
+hitam = 0,0,0,
+merah = 0,166,81
+hijau = 238,51,78
+pen_color = [biru, kuning, hitam, merah, hijau ]
 def olympic_wave():
     t.penup()
     t.goto(-100,-50)
     t.pendown()
     for i in range(3):
-        t.pencolor((pen_color[i*6],pen_color[i*6+1],pen_color[i*6+2]))
+        t.pencolor(pen_color[i*2])
         t.circle(50)
         t.penup()
         t.forward(125)
@@ -18,14 +24,14 @@ def olympic_wave():
         t.penup()
         t.goto(-325/2,-90)
         t.forward(125*(i+1))
-        t.pencolor((pen_color[i*6+3],pen_color[i*6+4],pen_color[i*6+5]))
+        t.pencolor(pen_color[i*2+1])
         t.pendown()
         t.circle(50)
         t.penup()
         t.pendown()
     for i in range(3):
         t.penup()
-        t.pencolor((pen_color[i*6],pen_color[i*6+1],pen_color[i*6+2]))
+        t.pencolor(pen_color[i*2])
         t.home()
         t.goto(-100, -50)
         t.penup()
@@ -47,7 +53,7 @@ def olympic_line():
     t.goto(-100,-220)
     t.pendown()
     for i in range(5):
-        t.pencolor((pen_color[i*3],pen_color[i*3+1],pen_color[i*3+2]))
+        t.pencolor(pen_color[i])
         t.circle(50)
         t.penup()
         t.forward(125/2)
@@ -56,7 +62,7 @@ def olympic_line():
     t.goto(-100,-220)
     t.speed()
     for i in range(4):
-        t.pencolor(pen_color[i*3],pen_color[i*3+1],pen_color[i*3+2])
+        t.pencolor(pen_color[i])
         t.penup()
         t.home()
         t.goto(-100,-220)
