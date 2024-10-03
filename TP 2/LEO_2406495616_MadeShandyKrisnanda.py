@@ -24,8 +24,7 @@ def main_menu(): #Give the user the option to choose what they want to do
         user_option = input("Select an operation [1/2/3]: ")
     return user_option
 
-def reverse_patern(): #Reverse the pattern according to user input
-    ask_k_mer = input("Input your pattern: ").upper()
+def reverse_patern(ask_k_mer): #Reverse the pattern according to user input
     while ask_k_mer: #Validating input
         for char in ask_k_mer:
             if char not in ["A", "C", "G", "T"]:
@@ -42,7 +41,7 @@ def reverse_patern(): #Reverse the pattern according to user input
             reversed_k_mer += "C"
         elif char == "T":
             reversed_k_mer += "A"
-    print(reversed_k_mer)
+    return reversed_k_mer
 
 def count_k_mer(genome): #Count the pattern according to user input
     search_pattern = input("input your pattern: ").upper
@@ -63,7 +62,6 @@ def frequent_k_mer(genome): #Find the most frequent k-mer
     validation_len_k_mer = False
     while validation_len_k_mer == False: #Validating input
         try:
-            len_k_mer < 0 == True
             len_k_mer = int(len_k_mer)
             validation_len_k_mer = True
         except:
@@ -76,6 +74,14 @@ def frequent_k_mer(genome): #Find the most frequent k-mer
     for i in range(len(genome)-len_k_mer+1): #Count the k-mer
             genome_pattern = genome[i:i+len_k_mer]
             genome_ls[genome_pattern] += 1
+    print(genome_ls)
+    used_k_mer = []
+    for k_mer in genome_ls:
+        if k_mer not in used_k_mer:
+            genome_ls[k_mer] += genome_ls[reverse_patern(k_mer)]
+            genome_ls[reverse_patern(k_mer)] = genome_ls[k_mer]
+            used_k_mer.append(k_mer)
+            used_k_mer.append(reverse_patern(k_mer))   
     sorted_genome_ls = sorted(genome_ls.items(), key=lambda x: x[1], reverse=True) #Sort the k-mer
     frequent_k_mer_ls = []
     for genome, i in sorted_genome_ls: #Find the most frequent k-mer and put it in a list
@@ -88,7 +94,8 @@ def main(): #Main function
     genome_file = open_file()
     user_option = main_menu()
     if user_option == "1":
-        reverse_patern()   
+        k_mer_input = input("Input your pattern: ").upper()   
+        print(reverse_patern(k_mer_input))
     elif user_option == "2":
         count_k_mer(genome_file)
     elif user_option == "3":
