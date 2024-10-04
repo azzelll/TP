@@ -47,7 +47,7 @@ def count_k_mer(genome): #Count the pattern according to user input
     search_pattern = input("input your pattern: ").upper
     while search_pattern not in genome: #Validating input
         print("Pattern not found")
-        search_patter = input("Input your pattern: ")
+        search_pattern = input("Input your pattern: ")
     count_pattern = 0
     k_mer_reversed = reverse_patern(search_pattern)
     for i in range(len(genome)-len(search_pattern)+1):
