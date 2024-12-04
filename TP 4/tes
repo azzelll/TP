@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox Layout</title>
+    <style>
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;  /* Teks akan dibungkus jika melebihi lebar kontainer */
+            justify-content: center;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex-container">
+        Ini adalah teks yang panjang dan akan otomatis terbungkus 
+        jika melebihi lebar kontainer.
+    </div>
+</body>
+</html>

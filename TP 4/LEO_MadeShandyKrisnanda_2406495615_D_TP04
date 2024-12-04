@@ -1,0 +1,250 @@
+from tkinter import *
+from tkinter import messagebox
+import tkinter as tk
+import random
+import time
+import datetime
+import webbrowser
+import urllib.parse
+
+class ChatApp:
+    lelucon_lst = [ #list dari lelucon
+    "Kenapa anak Fasilkom suka ngoding malam-malam? Karena di siang hari 'syntax error'-nya ikut matahari 🌞, malam baru bisa fokus 🌙💻.",
+    "Kenapa anak Fasilkom sering lupa makan? Karena bagi mereka, debugging itu 'makanan' sehari-hari 🍔➡️🪲.",
+    "Apa yang paling bikin anak Fasilkom ketawa? Kalau kodenya jalan tanpa error 😂💡.",
+    "Anak Fasilkom kalau ketemu crush gimana caranya? Pasti bilang, 'Bolehkah aku declare kamu jadi variabel hatiku?' ❤️💻.",
+    "Kenapa anak Fasilkom sering dibilang jago multitasking? Karena bisa coding sambil ngopi sambil galau juga ☕💔.",
+    "Ngapain anak Fasilkom kalau lagi patah hati? Rewrite code-nya, biar hatinya ikut di-recompile 🖤➡️❤️.",
+    "Kenapa anak Fasilkom susah tidur? Karena di kepala mereka penuh sama 'while loop' yang nggak ada break-nya 💤🔁.",
+    "Anak Fasilkom kalau disuruh olahraga jawabnya apa? 'Pingin, tapi olahraga saya lebih sering di CMD: RUN.exe' 🏃‍♂️💻.",
+    "Kenapa anak Fasilkom suka presentasi bareng teman? Karena kerja kelompok itu ibarat GitHub, banyak kontribusi 💾🤝.",
+    "Apa yang bikin anak Fasilkom teriak di kelas? Kalau dosen bilang, 'Ujian besok open book, tapi closed mind!' 😱📚."
+    "Your life"
+]
+    def __init__(self):
+        # Inisialisasi jendela utama
+        self.window = Tk()
+        self.window.title("Chatbot Sederhana")
+        self.window.geometry("410x470")
+        self.window.resizable(False, False)
+        
+        # Frame yang digunakan di dalam window
+        text_frame = tk.Frame(self.window)
+        text_frame.grid(row=0, column=0, padx=10, pady=10)
+        self.button_frame = Frame(self.window)
+        self.button_frame.grid(row=1, column=0, sticky='new', pady=15)
+        for i in range(4):
+            self.button_frame.grid_columnconfigure(i, weight=1)
+        
+        # Membuat Roomchat
+        self.my_room_chat = tk.Text(text_frame, height=22, width=46, bg="white", fg="black", state=tk.NORMAL)
+        self.my_room_chat.grid(row=0, column=0, sticky="nsew")
+        
+
+        # Membuat Scrollbar pada Roomchat
+        self.scroll_bar = Scrollbar(text_frame, command=self.my_room_chat.yview)
+        self.scroll_bar.grid(row=0, column=1, sticky="ns")
+        self.my_room_chat.config(yscrollcommand=self.scroll_bar.set)
+        
+        # Membuat menu bar
+        self.menu_bar = Menu(self.window)
+        
+        file_menu = Menu(self.menu_bar, tearoff=0)
+        file_menu.add_command(label="Simpan Sesi", command=self.save_session)
+        file_menu.add_command(label="Reset Sesi", command=self.reset_session)
+        file_menu.add_separator()
+        file_menu.add_command(label="Keluar", command=self.window.quit)
+        self.menu_bar.add_cascade(label="File", menu=file_menu)
+        
+        theme_menu = Menu(self.menu_bar, tearoff=0)
+        theme_menu.add_command(label="Ubah Tema", command=self.change_theme)
+        self.menu_bar.add_cascade(label="Tema", menu=theme_menu)
+        
+        about_menu = Menu(self.menu_bar, tearoff=0)
+        about_menu.add_command(label="Tentang Aplikasi", command=self.about_me)
+        self.menu_bar.add_cascade(label="Tentang", menu=about_menu)
+        
+        self.window.config(menu=self.menu_bar)
+        
+        # Membuat tombol
+        self.lelucon_button = Button(self.button_frame, text="Lelucon", command=self.lelucon_answer)
+        self.clock_button = Button(self.button_frame, text="Jam", command=self.clock_answer)
+        self.math_button = Button(self.button_frame, text="Matematika", command=self.math_question)
+        self.wa_button = Button(self.button_frame, text="WA", command=self.wa_button_clicked)
+        self.button = [self.lelucon_button, self.clock_button, self.math_button, self.wa_button]
+        for i in range(len(self.button)):
+            self.button[i].grid(row=0, column=i, padx=5, sticky='ew')
+            
+        # Membuat tempat untuk input user
+        self.input_user = Entry(self.window, width=55)
+        self.input_user.grid(row=2, column=0, sticky='nws', padx=10)
+        self.input_button = Button(self.window, text="Kirim", command=self.insert_message)
+        self.input_user.bind("<Return>", lambda event: self.insert_message())
+        self.input_button.grid(row=2, column=0, sticky='es' ,padx=20)
+        
+        self.my_room_chat.insert(END, "Chatbot : Halo! Ada yang bisa saya bantu?\n")
+        self.my_room_chat.config(state=tk.DISABLED)
+        self.window.mainloop()
+        
+        
+    def insert_message(self, isUser =True): # fungsi untuk mengirim pesan
+        self.current_input = self.input_user.get()
+        self.input_user.delete(0, END) 
+        if isUser and self.current_input:
+            input_message = f"User : {self.current_input}\n" 
+            self.my_room_chat.config(state=tk.NORMAL)
+            self.my_room_chat.insert(END, input_message)  # Menambahkan input ke Listbox
+            self.my_room_chat.config(state=tk.DISABLED)
+            self.my_room_chat.see(END)  # Menggulir ke bawah
+            if self.in_math_question: # Jika sedang dalam pertanyaan matematika
+                self.check_math_answer()
+                return
+            elif self.number_check: # Jika sedang dalam mode WA
+                if self.current_input.isdigit():
+                    self.dirrect_wa()
+                    return
+                else:
+                    self.current_bot_answer = "Mohon masukkan angka yang valid."
+                    self.number_check = False
+                    self.insert_message(False)
+                    return
+            self.bot_answer()
+        elif not isUser:
+            input_message = f"Chatbot : {self.current_bot_answer}\n"
+            self.my_room_chat.config(state=tk.NORMAL)
+            self.my_room_chat.insert(END, input_message) 
+            self.my_room_chat.config(state=tk.DISABLED) 
+            self.my_room_chat.see(END) 
+        
+    def bot_answer(self): # Fungsi beberapa kata default untuk menjawab pertanyaan user 
+        self.in_math_question = False
+        self.number_check = False
+        input_check = self.current_input.lower()
+        if "kabar" in input_check:
+            self.in_math_question = False
+            self.number_check = False
+            self.current_bot_answer = "Kabar baik, terima kasih! Apa yang bisa saya bantu?"
+            self.insert_message(False)
+        elif "jam" in input_check:
+            self.in_math_question = False
+            self.number_check = False
+            time_now = time.strftime("%H:%M:%S")
+            self.current_bot_answer = f"Saat ini pukul {time_now}"
+            self.insert_message(False)
+        elif "hai" in input_check:
+            self.in_math_question = False
+            self.number_check = False
+            self.current_bot_answer = "Hai, apa yang bisa saya bantu?"
+            self.insert_message(False)
+        elif "siapa kamu" in input_check:
+            self.in_math_question = False
+            self.number_check = False
+            self.current_bot_answer = "Saya adalah chatbot sederhana yang diciptakan oleh Made Shandy Krisnanda"
+            self.insert_message(False)
+            
+    def wa_button_clicked(self): # Fungsi untuk mengaktifkan mode WA
+        self.in_math_question = False
+        self.number_check = True
+        self.my_room_chat.config(state=tk.NORMAL)
+        self.my_room_chat.insert(END, "Chatbot : masukkan nomor whatsapp\n")
+        self.my_room_chat.config(state=tk.DISABLED)
+        self.my_room_chat.see(END)
+        
+    def dirrect_wa(self): # Fungsi untuk direct ke whatsapp
+        self.number_check = False
+        whatsapp_number = int(self.current_input)
+        default_message = "Halo, Bagaimana kabarmu?"
+        encoded_message = urllib.parse.quote(default_message)
+        webbrowser.open(f"https://api.whatsapp.com/send?phone={whatsapp_number}&text={encoded_message}")
+            
+    def lelucon_answer(self): # Fungsi untuk jawaban lelucon
+        self.in_math_question = False
+        self.number_check = False
+        random_lelucon = f"Chatbot: {(random.choice(self.lelucon_lst))}"
+        self.my_room_chat.config(state=tk.NORMAL)
+        self.my_room_chat.insert(END, "User: Buat lelucon\n")
+        self.my_room_chat.insert(END, f"{random_lelucon}\n")
+        self.my_room_chat.config(state=tk.DISABLED)
+        self.my_room_chat.see(END)
+    
+    def clock_answer(self): # Fungsi untuk jawaban jam
+        self.in_math_question = False
+        self.number_check = False
+        self.current_input = "tanya jam"
+        self.my_room_chat.config(state=tk.NORMAL)
+        self.my_room_chat.insert(END, f"User: {self.current_input}\n")
+        self.bot_answer()
+        self.my_room_chat.config(state=tk.DISABLED)
+        self.my_room_chat.see(END)
+
+    def math_question(self): # Fungsi untuk memberikan pertanyaan matematika
+        self.in_math_question = True
+        self.number_check = False
+        self.my_room_chat.config(state=tk.NORMAL)
+        self.my_room_chat.insert(END, "User: beri aku soal matematika\n")
+        num1 = random.randint(1, 10)
+        num2 = random.randint(1, 10)
+        self.correct_answer = num1 + num2
+        question = f"Chatbot : Berapakah hasil dari {num1} + {num2}?\n"
+        self.my_room_chat.insert(END, question)
+        self.my_room_chat.config(state=tk.DISABLED)
+        self.my_room_chat.see(END)
+        
+    def check_math_answer(self): # Fungsi untuk mengecek jawaban matematika
+        user_answer = self.current_input
+        self.my_room_chat.config(state=tk.NORMAL)
+        if user_answer.isdigit(): 
+            if int(user_answer) == self.correct_answer:
+                self.my_room_chat.insert(END, "Chatbot: Jawaban Anda benar!\n")
+            else:
+                self.my_room_chat.insert(END, f"Chatbot: Jawaban Anda salah! Jawaban yang benar adalah {self.correct_answer}.\n")
+        else:
+            self.my_room_chat.insert(END, "Chatbot: Mohon masukkan angka yang valid.\n")
+        self.my_room_chat.config(state=tk.DISABLED)
+        self.my_room_chat.see(END)
+        self.input_user.delete(0, END)
+        
+    def save_session(self): # Fungsi untuk menyimpan sesi chat
+        self.current_room_chat = self.my_room_chat.get('1.0', END).split("\n")
+        self.current_room_chat = [line for line in self.current_room_chat if line.strip() != ""]
+        if len(self.current_room_chat) > 1:
+            file_name = f"chat_session_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
+            new_file = open(file_name, "w")
+            for line in self.current_room_chat:
+                new_file.write(line + "\n")
+            new_file.close()
+            messagebox.showinfo("Sukses", f"Sesi telah disimpan sebagai {file_name}.")
+        else:
+            messagebox.showinfo("Info","Tidak ada sesi untuk disimpan.")
+            
+    def reset_session(self): # Fungsi untuk mereset sesi chat
+        self.my_room_chat.config(state=tk.NORMAL)
+        self.my_room_chat.delete('1.0', END)
+        messagebox.showinfo("Reset", "Sesi telah direset.")
+        self.my_room_chat.insert(END, "Chatbot: Halo! ada yang bisa saya bantu?\n")
+        self.my_room_chat.config(state=tk.DISABLED)
+        
+    def change_theme(self): # Fungsi untuk mengganti tema
+        current_bg = self.my_room_chat.cget("bg")
+        if current_bg == "#2b2b2b":
+            self.window.tk_setPalette(background="#f0f0f0", foreground="black")
+            self.my_room_chat.configure(bg="white", fg="black")
+            self.input_user.configure(bg="white", fg="black")
+            self.scroll_bar.configure(bg="#f0f0f0")
+            for btn in self.button:
+                btn.configure(bg="#f0f0f0", fg="black")
+        else:  
+            self.window.tk_setPalette(background="#2b2b2b", foreground="white")
+            self.my_room_chat.configure(bg="#2b2b2b", fg="white")
+            self.input_user.configure(bg="#3b3b3b", fg="white")
+            self.scroll_bar.configure(bg="#2b2b2b")
+            for btn in self.button:
+                btn.configure(bg="#3b3b3b", fg="white")
+            
+    def about_me(self): # Fungsi untuk menampilkan informasi tentang saya
+        info = "Aplkasi Chatbot ini dikembangkan oleh Made Shandy Krisnanda dari FASILKOM UI di tahun 2024.\nSemoga aplikasi ini dapat menjadi pembelajaran yang bermanfaat, have a great day!"
+        messagebox.showinfo("Tentang, aplikasi", info)
+        self.my_room_chat.see(END)
+        
+if __name__ == "__main__":
+    ChatApp()
