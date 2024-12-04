@@ -9,16 +9,16 @@ import urllib.parse
 
 class ChatApp:
     lelucon_lst = [ #list dari lelucon
-    "Kenapa anak Fasilkom suka ngoding malam-malam? Karena di siang hari 'syntax error'-nya ikut matahari 🌞, malam baru bisa fokus 🌙💻.",
-    "Kenapa anak Fasilkom sering lupa makan? Karena bagi mereka, debugging itu 'makanan' sehari-hari 🍔➡️🪲.",
-    "Apa yang paling bikin anak Fasilkom ketawa? Kalau kodenya jalan tanpa error 😂💡.",
-    "Anak Fasilkom kalau ketemu crush gimana caranya? Pasti bilang, 'Bolehkah aku declare kamu jadi variabel hatiku?' ❤️💻.",
-    "Kenapa anak Fasilkom sering dibilang jago multitasking? Karena bisa coding sambil ngopi sambil galau juga ☕💔.",
-    "Ngapain anak Fasilkom kalau lagi patah hati? Rewrite code-nya, biar hatinya ikut di-recompile 🖤➡️❤️.",
-    "Kenapa anak Fasilkom susah tidur? Karena di kepala mereka penuh sama 'while loop' yang nggak ada break-nya 💤🔁.",
-    "Anak Fasilkom kalau disuruh olahraga jawabnya apa? 'Pingin, tapi olahraga saya lebih sering di CMD: RUN.exe' 🏃‍♂️💻.",
-    "Kenapa anak Fasilkom suka presentasi bareng teman? Karena kerja kelompok itu ibarat GitHub, banyak kontribusi 💾🤝.",
-    "Apa yang bikin anak Fasilkom teriak di kelas? Kalau dosen bilang, 'Ujian besok open book, tapi closed mind!' 😱📚."
+    "Kenapa anak Fasilkom suka ngoding malam-malam? Karena di siang hari 'syntax error'-nya ikut matahari , malam baru bisa fokus .",
+    "Kenapa anak Fasilkom sering lupa makan? Karena bagi mereka, debugging itu 'makanan' sehari-hari ",
+    "Apa yang paling bikin anak Fasilkom ketawa? Kalau kodenya jalan tanpa error .",
+    "Anak Fasilkom kalau ketemu crush gimana caranya? Pasti bilang, 'Bolehkah aku declare kamu jadi variabel hatiku?'.",
+    "Kenapa anak Fasilkom sering dibilang jago multitasking? Karena bisa coding sambil ngopi sambil galau juga .",
+    "Ngapain anak Fasilkom kalau lagi patah hati? Rewrite code-nya, biar hatinya ikut di-recompile .",
+    "Kenapa anak Fasilkom susah tidur? Karena di kepala mereka penuh sama 'while loop' yang nggak ada break-nya .",
+    "Anak Fasilkom kalau disuruh olahraga jawabnya apa? 'Pingin, tapi olahraga saya lebih sering di CMD: RUN.exe' .",
+    "Kenapa anak Fasilkom suka presentasi bareng teman? Karena kerja kelompok itu ibarat GitHub, banyak kontribusi .",
+    "Apa yang bikin anak Fasilkom teriak di kelas? Kalau dosen bilang, 'Ujian besok open book, tapi closed mind!' ."
     "Your life"
 ]
     def __init__(self):
@@ -162,7 +162,7 @@ class ChatApp:
         self.number_check = False
         random_lelucon = f"Chatbot: {(random.choice(self.lelucon_lst))}"
         self.my_room_chat.config(state=tk.NORMAL)
-        self.my_room_chat.insert(END, "User: Buat lelucon\n")
+        self.my_room_chat.insert(END, "User: buat lelucon\n")
         self.my_room_chat.insert(END, f"{random_lelucon}\n")
         self.my_room_chat.config(state=tk.DISABLED)
         self.my_room_chat.see(END)
@@ -213,7 +213,7 @@ class ChatApp:
             for line in self.current_room_chat:
                 new_file.write(line + "\n")
             new_file.close()
-            messagebox.showinfo("Sukses", f"Sesi telah disimpan sebagai {file_name}.")
+            messagebox.showinfo("Sukses", f"Sesi telah disimpan sebagai \'{file_name}\'.")
         else:
             messagebox.showinfo("Info","Tidak ada sesi untuk disimpan.")
             
